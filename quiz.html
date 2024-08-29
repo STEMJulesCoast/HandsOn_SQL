@@ -14,7 +14,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh; /* Nutze die gesamte Höhe des Viewports */
+            min-height: 100vh; /* Nutze die gesamte Höhe des Viewports */
             box-sizing: border-box;
         }
 
@@ -67,71 +67,105 @@
 </head>
 <body>
     <!-- Logo-Einfügung -->
-    <img id="logo" src="NAT_Logo.png" alt="Logo"> <!-- Ersetze "logo.png" durch den Pfad zu deinem Logo -->
+    <img id="logo" src="NAT_Logo.png" alt="Logo"> <!--Logo-Pfad -->
 
     <div id="quiz-container">
         <div class="question-container" id="question1">
             <div class="question">
-                <h2>Question 1: What is the capital of France?</h2>
+                <h2>Frage 1: Welche SQL-Anweisung wird verwendet, um Daten in eine Datenbanktabelle einzufügen?</h2>
                 <ul class="options">
-                    <li><input type="radio" name="q1" value="A"> A) Berlin</li>
-                    <li><input type="radio" name="q1" value="B"> B) Madrid</li>
-                    <li><input type="radio" name="q1" value="C"> C) Paris</li>
-                    <li><input type="radio" name="q1" value="D"> D) Rome</li>
+                    <li><input type="radio" name="q1" value="A"> A) SELECT</li>
+                    <li><input type="radio" name="q1" value="B"> B) INSERT</li>
+                    <li><input type="radio" name="q1" value="C"> C) UPDATE</li>
+                    <li><input type="radio" name="q1" value="D"> D) DELETE</li>
                 </ul>
             </div>
-            <button onclick="checkAnswer('q1', 'C', 'question1', 'question2')">Submit</button>
+            <button onclick="checkAnswer('q1', 'B', 'question1', 'question2')">Submit</button>
             <p id="result1"></p>
         </div>
 
         <div class="question-container" id="question2">
             <div class="question">
-                <h2>Question 2: What is the capital of Spain?</h2>
+                <h2>Frage 2: Welche SQL-Funktion wird verwendet, um die Anzahl der Zeilen in einer Tabelle zu zählen?</h2>
                 <ul class="options">
-                    <li><input type="radio" name="q2" value="A"> A) Lisbon</li>
-                    <li><input type="radio" name="q2" value="B"> B) Madrid</li>
-                    <li><input type="radio" name="q2" value="C"> C) Rome</li>
-                    <li><input type="radio" name="q2" value="D"> D) Paris</li>
+                    <li><input type="radio" name="q2" value="A"> A) SUM()</li>
+                    <li><input type="radio" name="q2" value="B"> B) COUNT()</li>
+                    <li><input type="radio" name="q2" value="C"> C) MAX()</li>
+                    <li><input type="radio" name="q2" value="D"> D) AVG()</li>
                 </ul>
             </div>
             <button onclick="checkAnswer('q2', 'B', 'question2', 'question3')">Submit</button>
             <p id="result2"></p>
         </div>
 
-        <!-- Weitere Fragen können hier hinzugefügt werden -->
-        
+        <div class="question-container" id="question3">
+            <div class="question">
+                <h2>Frage 3: Welche SQL-Klausel wird verwendet, um die Ergebnisse einer Abfrage zu sortieren und welche, um die Ergebnisse zu filtern?</h2>
+                <ul class="options">
+                    <li><input type="radio" name="q3" value="A"> A) ORDER BY und FILTER</li>
+                    <li><input type="radio" name="q3" value="B"> B) GROUP BY und WHERE</li>
+                    <li><input type="radio" name="q3" value="C"> C) ORDER BY und WHERE</li>
+                    <li><input type="radio" name="q3" value="D"> D) SORT BY und LIMIT</li>
+                </ul>
+            </div>
+            <button onclick="checkAnswer('q3', 'C', 'question3', '')">Submit</button>
+            <p id="result3"></p>
+        </div>
+
+        <!-- Bereich für die Zusammenfassung -->
         <div id="finalMessage" style="display:none;">
             <h2>Quiz Completed!</h2>
+            <p id="summary"></p> <!-- Hier wird die Zusammenfassung angezeigt -->
         </div>
     </div>
 
     <script>
         document.getElementById('question1').style.display = 'block'; // Zeigt die erste Frage initial an
 
+        // Speichert die Antworten des Benutzers
+        const userAnswers = {};
+
         function checkAnswer(questionName, correctAnswer, currentQuestionId, nextQuestionId) {
             const selectedOption = document.querySelector(`input[name="${questionName}"]:checked`);
             const result = document.getElementById(`result${currentQuestionId.slice(-1)}`);
             
             if (selectedOption) {
-                if (selectedOption.value === correctAnswer) {
+                const userAnswer = selectedOption.value;
+                userAnswers[questionName] = userAnswer; // Speichere die Antwort des Benutzers
+
+                if (userAnswer === correctAnswer) {
                     result.textContent = 'Correct!';
                 } else {
                     result.textContent = `Incorrect. The correct answer is ${correctAnswer}.`;
                 }
                 
-                // Nach 2 Sekunden zur nächsten Frage wechseln
+                // Nach 1 Sekunde zur nächsten Frage wechseln
                 setTimeout(() => {
                     document.getElementById(currentQuestionId).style.display = 'none';
                     
                     if (nextQuestionId) {
                         document.getElementById(nextQuestionId).style.display = 'block';
                     } else {
-                        document.getElementById('finalMessage').style.display = 'block';
+                        showSummary(); // Zeige die Zusammenfassung
                     }
-                }, 2000); // 2 Sekunden Verzögerung vor der Anzeige der nächsten Frage
+                }, 1500); // 1 Sekunden Verzögerung vor der Anzeige der nächsten Frage
             } else {
                 alert("Please select an answer.");
             }
+        }
+
+        function showSummary() {
+            const summary = document.getElementById('summary');
+            summary.innerHTML = '<h3>Deine Antworten:</h3>';
+            
+            // Übersicht der Antworten anzeigen
+            summary.innerHTML += `
+                <p>Question 1: Your answer: ${userAnswers['q1']} - ${userAnswers['q1'] === 'B' ? 'Correct' : 'Incorrect (Correct: INSERT)'}</p>
+                <p>Question 2: Your answer: ${userAnswers['q2']} - ${userAnswers['q2'] === 'B' ? 'Correct' : 'Incorrect (Correct: COUNT())'}</p>
+                <p>Question 3: Your answer: ${userAnswers['q3']} - ${userAnswers['q3'] === 'C' ? 'Correct' : 'Incorrect (Correct: ORDER BY und WHERE)'}</p>
+            `;
+
+            document.getElementById('finalMessage').style.display = 'block'; // Zeige die Zusammenfassung
         }
     </script>
 </body>
