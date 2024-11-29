@@ -115,9 +115,15 @@ def apply_syntax_highlighting(event=None):
             if not start_idx:
                 break
             end_idx = f"{start_idx}+{len(keyword)}c"
-            output_query.tag_add("keyword", start_idx, end_idx)
-            output_query.tag_config("keyword", foreground="blue")
-            start_idx = end_idx
+            # Check if the found keyword matches exactly (case-sensitive)
+            found_word = output_query.get(start_idx, end_idx)
+            if found_word == keyword:  # Only highlight exact matches
+                output_query.tag_add("keyword", start_idx, end_idx)
+            
+            start_idx = end_idx  # Move to the next position
+
+    # Configure the tag for keywords
+    output_query.tag_config("keyword", foreground="blue")
 
 def open_add_window():
     add_window = Toplevel(root)
